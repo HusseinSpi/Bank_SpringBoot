@@ -48,7 +48,22 @@ public class Transaction {
     @JoinColumn(name = "source_account")
     private Account sourceAccount;
 
-    public Transaction() {
-    }
+    @ManyToOne
+    @JoinColumn(name = "card_id")
+    private Card card;
 
+    public Transaction() {}
+
+    public Transaction(Double amount, String currency, LocalDateTime timestamp,
+                       TransferMode transferMode, TransactionType transactionType,
+                       Account destinationAccount, Account sourceAccount, Card card) {
+        this.amount = amount;
+        this.currency = currency;
+        this.timestamp = timestamp;
+        this.transferMode = transferMode;
+        this.transactionType = transactionType;
+        this.destinationAccount = destinationAccount;
+        this.sourceAccount = sourceAccount;
+        this.card = card;
+    }
 }

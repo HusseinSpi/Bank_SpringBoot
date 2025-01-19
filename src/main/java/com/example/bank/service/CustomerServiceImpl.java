@@ -34,7 +34,6 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     public Customer updateCustomer(Customer customer) {
-        // you could check if customer exists, etc.
         return customerRepository.save(customer);
     }
 

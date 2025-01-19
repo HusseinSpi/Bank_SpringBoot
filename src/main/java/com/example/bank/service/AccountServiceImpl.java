@@ -34,6 +34,7 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public Account updateAccount(Account account) {
+        // optionally check if it exists before saving
         return accountRepository.save(account);
     }
 
