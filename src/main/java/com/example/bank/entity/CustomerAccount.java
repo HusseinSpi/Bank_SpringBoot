@@ -1,12 +1,33 @@
 package com.example.bank.entity;
 
 import jakarta.persistence.*;
-import lombok.Data;
 
 @Entity
 @Table(name = "customers_accounts")
-@Data
 public class CustomerAccount {
+    public Long getCustomerAccountId() {
+        return customerAccountId;
+    }
+
+    public void setCustomerAccountId(Long customerAccountId) {
+        this.customerAccountId = customerAccountId;
+    }
+
+    public Long getAccountId() {
+        return accountId;
+    }
+
+    public void setAccountId(Long accountId) {
+        this.accountId = accountId;
+    }
+
+    public Long getCustomerId() {
+        return customerId;
+    }
+
+    public void setCustomerId(Long customerId) {
+        this.customerId = customerId;
+    }
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
