@@ -1,14 +1,44 @@
 package com.example.bank.entity;
 
 import jakarta.persistence.*;
-import lombok.Data;
 
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "forex")
-@Data
 public class Forex {
+
+    public Long getForexId() {
+        return forexId;
+    }
+
+    public void setForexId(Long forexId) {
+        this.forexId = forexId;
+    }
+
+    public String getCurrency() {
+        return currency;
+    }
+
+    public void setCurrency(String currency) {
+        this.currency = currency;
+    }
+
+    public Double getExchangeRate() {
+        return exchangeRate;
+    }
+
+    public void setExchangeRate(Double exchangeRate) {
+        this.exchangeRate = exchangeRate;
+    }
+
+    public LocalDateTime getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(LocalDateTime timestamp) {
+        this.timestamp = timestamp;
+    }
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -1,17 +1,57 @@
 package com.example.bank.entity;
 
 import jakarta.persistence.*;
-import lombok.Data;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 
+
 @Entity
 @Table(name = "accounts")
-@Data
 public class Account {
+
+    public void setCards(List<Card> cards) {
+        this.cards = cards;
+    }
+
+    public void setCustomers(List<Customer> customers) {
+        this.customers = customers;
+    }
+
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public void setAccountType(AccountType accountType) {
+        this.accountType = accountType;
+    }
+
+    public void setStatus(AccountStatus status) {
+        this.status = status;
+    }
+
+    public void setCurrency(String currency) {
+        this.currency = currency;
+    }
+
+    public void setBalance(double balance) {
+        this.balance = balance;
+    }
+
+    public void setAccountNumber(String accountNumber) {
+        this.accountNumber = accountNumber;
+    }
+
+    public void setAccountId(Long accountId) {
+        this.accountId = accountId;
+    }
+
     public enum AccountStatus {
         ACTIVE,
         RESTRICTED,
@@ -31,8 +71,11 @@ public class Account {
     @Column(name = "account_number", nullable = false, length = 50)
     private String accountNumber;
 
-    @Column(nullable = false, precision = 10, scale = 2)
-    private Double balance;
+    @Column(nullable = false)
+    private Double balance; // remove precision and scale
+
+
+
 
     @Column(length = 10, nullable = false)
     private String currency;
