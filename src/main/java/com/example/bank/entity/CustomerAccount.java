@@ -3,7 +3,7 @@ package com.example.bank.entity;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "customer_account") // نفس اسم الجدول الذي سيربط الزبائن بالحسابات
+@Table(name = "customer_account")
 public class CustomerAccount {
 
     @Id
