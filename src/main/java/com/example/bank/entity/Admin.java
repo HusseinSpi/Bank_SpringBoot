@@ -73,5 +73,4 @@ public class Admin {
     public void setRole(AdminRole role) {
         this.role = role;
     }
-
 }

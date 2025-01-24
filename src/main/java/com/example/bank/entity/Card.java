@@ -41,11 +41,11 @@ public class Card {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "card_status", length = 10, nullable = false)
-    private CardStatus cardStatus; // e.g. ACTIVE, BLOCKED
+    private CardStatus cardStatus;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "card_type", length = 10, nullable = false)
-    private CardType cardType; // DEBIT, CREDIT
+    private CardType cardType;
 
     @Column(name = "created_at", columnDefinition = "DATETIME")
     private LocalDateTime createdAt;
@@ -64,12 +64,12 @@ public class Card {
         return account;
     }
 
-    public String getCardNumber() {
-        return cardNumber;
-    }
-
     public String getName() {
         return name;
+    }
+
+    public String getCardNumber() {
+        return cardNumber;
     }
 
     public LocalDate getExpirationDate() {
@@ -120,12 +120,12 @@ public class Card {
         this.ccv = ccv;
     }
 
-    public void setCardType(CardType cardType) {
-        this.cardType = cardType;
-    }
-
     public void setCardStatus(CardStatus cardStatus) {
         this.cardStatus = cardStatus;
+    }
+
+    public void setCardType(CardType cardType) {
+        this.cardType = cardType;
     }
 
     public void setCreatedAt(LocalDateTime createdAt) {
@@ -135,5 +135,4 @@ public class Card {
     public void setUpdatedAt(LocalDateTime updatedAt) {
         this.updatedAt = updatedAt;
     }
-
 }

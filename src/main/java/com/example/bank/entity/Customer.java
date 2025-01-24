@@ -35,7 +35,7 @@ public class Customer {
     @Column(name = "updated_at", columnDefinition = "DATETIME")
     private LocalDateTime updatedAt;
 
-    // علاقة One-To-Many مع جدول الربط CustomerAccount
+    // Relationship to the bridging table
     @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)
     private List<CustomerAccount> customerAccounts = new ArrayList<>();
 
@@ -113,5 +113,4 @@ public class Customer {
     public void setCustomerAccounts(List<CustomerAccount> customerAccounts) {
         this.customerAccounts = customerAccounts;
     }
-
 }
