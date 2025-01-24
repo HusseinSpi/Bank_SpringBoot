@@ -2,6 +2,7 @@ package com.example.bank.entity;
 
 import jakarta.persistence.*;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Entity
@@ -15,11 +16,11 @@ public class Transaction {
         this.transactionId = transactionId;
     }
 
-    public Double getAmount() {
+    public BigDecimal getAmount() {
         return amount;
     }
 
-    public void setAmount(Double amount) {
+    public void setAmount(BigDecimal amount) {
         this.amount = amount;
     }
 
@@ -94,7 +95,7 @@ public class Transaction {
     private Long transactionId;
 
     @Column(nullable = false, precision = 10, scale = 2)
-    private Double amount;
+    private BigDecimal amount;
 
     @Column(length = 10, nullable = false)
     private String currency;
@@ -124,7 +125,7 @@ public class Transaction {
 
     public Transaction() {}
 
-    public Transaction(Double amount, String currency, LocalDateTime timestamp,
+    public Transaction(BigDecimal amount, String currency, LocalDateTime timestamp,
                        TransferMode transferMode, TransactionType transactionType,
                        Account destinationAccount, Account sourceAccount, Card card) {
         this.amount = amount;

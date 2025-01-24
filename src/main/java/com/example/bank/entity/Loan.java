@@ -2,6 +2,7 @@ package com.example.bank.entity;
 
 import jakarta.persistence.*;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Entity
@@ -23,11 +24,11 @@ public class Loan {
         this.customer = customer;
     }
 
-    public Double getAmount() {
+    public BigDecimal getAmount() {
         return amount;
     }
 
-    public void setAmount(Double amount) {
+    public void setAmount(BigDecimal amount) {
         this.amount = amount;
     }
 
@@ -39,11 +40,11 @@ public class Loan {
         this.currency = currency;
     }
 
-    public Double getInterestRate() {
+    public BigDecimal getInterestRate() {
         return interestRate;
     }
 
-    public void setInterestRate(Double interestRate) {
+    public void setInterestRate(BigDecimal interestRate) {
         this.interestRate = interestRate;
     }
 
@@ -85,13 +86,13 @@ public class Loan {
     private Customer customer;
 
     @Column(nullable = false, precision = 10, scale = 2)
-    private Double amount;
+    private BigDecimal amount;
 
     @Column(length = 10, nullable = false)
     private String currency;
 
     @Column(name = "interest_rate", precision = 5, scale = 2, nullable = false)
-    private Double interestRate;
+    private BigDecimal interestRate;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "loan_status", length = 10, nullable = false)

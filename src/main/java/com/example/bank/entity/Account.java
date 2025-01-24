@@ -2,6 +2,7 @@ package com.example.bank.entity;
 
 import jakarta.persistence.*;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -40,7 +41,7 @@ public class Account {
         this.currency = currency;
     }
 
-    public void setBalance(double balance) {
+    public void setBalance(BigDecimal balance) {
         this.balance = balance;
     }
 
@@ -72,7 +73,7 @@ public class Account {
     private String accountNumber;
 
     @Column(nullable = false)
-    private Double balance; // remove precision and scale
+    private BigDecimal balance; // remove precision and scale
 
 
 

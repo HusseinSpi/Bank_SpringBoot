@@ -2,6 +2,7 @@ package com.example.bank.entity;
 
 import jakarta.persistence.*;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Entity
@@ -24,11 +25,11 @@ public class Forex {
         this.currency = currency;
     }
 
-    public Double getExchangeRate() {
+    public BigDecimal getExchangeRate() {
         return exchangeRate;
     }
 
-    public void setExchangeRate(Double exchangeRate) {
+    public void setExchangeRate(BigDecimal exchangeRate) {
         this.exchangeRate = exchangeRate;
     }
 
@@ -49,7 +50,7 @@ public class Forex {
     private String currency;
 
     @Column(name = "exchange_rate", precision = 10, scale = 4, nullable = false)
-    private Double exchangeRate;
+    private BigDecimal exchangeRate;
 
     @Column
     private LocalDateTime timestamp;
