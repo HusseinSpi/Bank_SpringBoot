@@ -33,8 +33,15 @@ public class CustomerAccountServiceImpl implements CustomerAccountService {
     }
 
     @Override
-    public CustomerAccount updateCustomerAccount(CustomerAccount customerAccount) {
-        return customerAccountRepository.save(customerAccount);
+    public CustomerAccount updateCustomerAccount(Long id, CustomerAccount updatedCA) {
+        CustomerAccount existingCA = customerAccountRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("CustomerAccount not found with ID: " + id));
+
+        // Update the fields you need
+        existingCA.setCustomer(updatedCA.getCustomer());
+        existingCA.setAccount(updatedCA.getAccount());
+
+        return customerAccountRepository.save(existingCA);
     }
 
     @Override

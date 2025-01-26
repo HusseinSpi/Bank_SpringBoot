@@ -19,7 +19,6 @@ public class AdminServiceImpl implements AdminService {
 
     @Override
     public Admin createAdmin(Admin admin) {
-        // e.g. hash password if needed
         return adminRepository.save(admin);
     }
 
@@ -34,8 +33,16 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
-    public Admin updateAdmin(Admin admin) {
-        return adminRepository.save(admin);
+    public Admin updateAdmin(Long id, Admin updatedAdmin) {
+        Admin existingAdmin = adminRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Admin not found"));
+
+        existingAdmin.setUsername(updatedAdmin.getUsername());
+        existingAdmin.setPassword(updatedAdmin.getPassword());
+        existingAdmin.setEmail(updatedAdmin.getEmail());
+        existingAdmin.setRole(updatedAdmin.getRole());
+
+        return adminRepository.save(existingAdmin);
     }
 
     @Override

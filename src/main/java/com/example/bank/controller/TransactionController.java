@@ -7,6 +7,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+/**
+ * يتحكم في عمليات CRUD على كائنات Transaction (المعاملات).
+ */
 @RestController
 @RequestMapping("/api/transactions")
 public class TransactionController {
@@ -18,27 +21,42 @@ public class TransactionController {
         this.transactionService = transactionService;
     }
 
+    /**
+     * إنشاء معاملة جديدة.
+     */
     @PostMapping
     public Transaction createTransaction(@RequestBody Transaction transaction) {
         return transactionService.createTransaction(transaction);
     }
 
+    /**
+     * الحصول على معاملة عبر معرّفها (ID).
+     */
     @GetMapping("/{id}")
     public Transaction getTransaction(@PathVariable Long id) {
         return transactionService.getTransactionById(id);
     }
 
+    /**
+     * الحصول على جميع المعاملات.
+     */
     @GetMapping
     public List<Transaction> getAllTransactions() {
         return transactionService.getAllTransactions();
     }
 
+    /**
+     * تعديل معاملة موجودة عبر ID.
+     */
     @PutMapping("/{id}")
-    public Transaction updateTransaction(@PathVariable Long id, @RequestBody Transaction transaction) {
-        transaction.setTransactionId(id);
-        return transactionService.updateTransaction(transaction);
+    public Transaction updateTransaction(@PathVariable Long id, @RequestBody Transaction updatedTransaction) {
+        // لا نستطيع استخدام setTransactionId(id). بدلاً من ذلك نمرر المعرف للـ Service.
+        return transactionService.updateTransaction(id, updatedTransaction);
     }
 
+    /**
+     * حذف معاملة عبر ID.
+     */
     @DeleteMapping("/{id}")
     public void deleteTransaction(@PathVariable Long id) {
         transactionService.deleteTransaction(id);

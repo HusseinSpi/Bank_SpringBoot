@@ -5,6 +5,7 @@ import com.example.bank.repository.LoanRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -33,8 +34,18 @@ public class LoanServiceImpl implements LoanService {
     }
 
     @Override
-    public Loan updateLoan(Loan loan) {
-        return loanRepository.save(loan);
+    public Loan updateLoan(Long id, Loan updatedLoan) {
+        Loan existingLoan = loanRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Loan not found"));
+
+        existingLoan.setCustomer(updatedLoan.getCustomer());
+        existingLoan.setAmount(updatedLoan.getAmount());
+        existingLoan.setCurrency(updatedLoan.getCurrency());
+        existingLoan.setInterestRate(updatedLoan.getInterestRate());
+        existingLoan.setLoanStatus(updatedLoan.getLoanStatus());
+        existingLoan.setUpdatedAt(LocalDateTime.now());
+
+        return loanRepository.save(existingLoan);
     }
 
     @Override

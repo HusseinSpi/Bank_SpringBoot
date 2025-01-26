@@ -5,6 +5,7 @@ import com.example.bank.repository.CardRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -33,8 +34,20 @@ public class CardServiceImpl implements CardService {
     }
 
     @Override
-    public Card updateCard(Card card) {
-        return cardRepository.save(card);
+    public Card updateCard(Long id, Card updatedCard) {
+        Card existingCard = cardRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Card not found"));
+
+        existingCard.setName(updatedCard.getName());
+        existingCard.setCardNumber(updatedCard.getCardNumber());
+        existingCard.setExpirationDate(updatedCard.getExpirationDate());
+        existingCard.setCcv(updatedCard.getCcv());
+        existingCard.setCardStatus(updatedCard.getCardStatus());
+        existingCard.setCardType(updatedCard.getCardType());
+        existingCard.setAccount(updatedCard.getAccount());
+        existingCard.setUpdatedAt(LocalDateTime.now());
+
+        return cardRepository.save(existingCard);
     }
 
     @Override

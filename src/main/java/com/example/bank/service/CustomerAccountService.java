@@ -8,6 +8,6 @@ public interface CustomerAccountService {
     CustomerAccount createCustomerAccount(CustomerAccount customerAccount);
     CustomerAccount getCustomerAccountById(Long id);
     List<CustomerAccount> getAllCustomerAccounts();
-    CustomerAccount updateCustomerAccount(CustomerAccount customerAccount);
+    CustomerAccount updateCustomerAccount(Long id, CustomerAccount updatedCA);
     void deleteCustomerAccount(Long id);
 }

@@ -5,6 +5,7 @@ import com.example.bank.repository.ForexRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -33,8 +34,15 @@ public class ForexServiceImpl implements ForexService {
     }
 
     @Override
-    public Forex updateForex(Forex forex) {
-        return forexRepository.save(forex);
+    public Forex updateForex(Long id, Forex updatedForex) {
+        Forex existingForex = forexRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Forex not found"));
+
+        existingForex.setCurrency(updatedForex.getCurrency());
+        existingForex.setExchangeRate(updatedForex.getExchangeRate());
+        existingForex.setTimestamp(LocalDateTime.now());
+
+        return forexRepository.save(existingForex);
     }
 
     @Override

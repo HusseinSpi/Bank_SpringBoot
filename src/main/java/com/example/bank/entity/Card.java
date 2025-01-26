@@ -56,6 +56,8 @@ public class Card {
     public Card() {
     }
 
+    // -- Getters --
+
     public Long getCardId() {
         return cardId;
     }
@@ -96,7 +98,10 @@ public class Card {
         return updatedAt;
     }
 
-    public void setCardId(Long cardId) {
+    // -- Setters --
+
+    @SuppressWarnings("unused")
+    private void setCardId(Long cardId) {
         this.cardId = cardId;
     }
 

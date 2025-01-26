@@ -34,6 +34,8 @@ public class Admin {
     public Admin() {
     }
 
+    // -- Getters --
+
     public Long getAdminId() {
         return adminId;
     }
@@ -54,7 +56,10 @@ public class Admin {
         return role;
     }
 
-    public void setAdminId(Long adminId) {
+    // -- Setters --
+
+    @SuppressWarnings("unused")
+    private void setAdminId(Long adminId) {
         this.adminId = adminId;
     }
 

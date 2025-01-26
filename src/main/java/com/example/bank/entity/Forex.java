@@ -25,32 +25,37 @@ public class Forex {
     public Forex() {
     }
 
+    // -- Getters --
+
     public Long getForexId() {
         return forexId;
-    }
-
-    public void setForexId(Long forexId) {
-        this.forexId = forexId;
     }
 
     public String getCurrency() {
         return currency;
     }
 
-    public void setCurrency(String currency) {
-        this.currency = currency;
-    }
-
     public BigDecimal getExchangeRate() {
         return exchangeRate;
     }
 
-    public void setExchangeRate(BigDecimal exchangeRate) {
-        this.exchangeRate = exchangeRate;
-    }
-
     public LocalDateTime getTimestamp() {
         return timestamp;
+    }
+
+    // -- Setters --
+
+    @SuppressWarnings("unused")
+    private void setForexId(Long forexId) {
+        this.forexId = forexId;
+    }
+
+    public void setCurrency(String currency) {
+        this.currency = currency;
+    }
+
+    public void setExchangeRate(BigDecimal exchangeRate) {
+        this.exchangeRate = exchangeRate;
     }
 
     public void setTimestamp(LocalDateTime timestamp) {

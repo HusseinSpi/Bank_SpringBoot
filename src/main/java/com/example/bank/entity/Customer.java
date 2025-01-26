@@ -1,6 +1,9 @@
 package com.example.bank.entity;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -14,33 +17,33 @@ public class Customer {
     @Column(name = "customer_id")
     private Long customerId;
 
-    @Column(nullable = false, length = 50)
+    @Column(nullable = false, length = 50, unique = true)
     private String username;
 
     @Column(nullable = false, length = 100)
     private String password;
 
-    @Column(length = 100)
+    @Column(nullable = false, length = 100, unique = true)
     private String email;
 
-    @Column(length = 255)
+    @Column(nullable = false, length = 255)
     private String address;
 
-    @Column(length = 50)
+    @Column(nullable = false, length = 50, unique = true)
     private String phone;
 
-    @Column(name = "created_at", columnDefinition = "DATETIME")
+    @CreationTimestamp
+    @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
 
-    @Column(name = "updated_at", columnDefinition = "DATETIME")
+    @UpdateTimestamp
+    @Column(name = "updated_at")
     private LocalDateTime updatedAt;
-
-    // Relationship to the bridging table
-    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)
-    private List<CustomerAccount> customerAccounts = new ArrayList<>();
 
     public Customer() {
     }
+
+    // -- Getters --
 
     public Long getCustomerId() {
         return customerId;
@@ -74,11 +77,10 @@ public class Customer {
         return updatedAt;
     }
 
-    public List<CustomerAccount> getCustomerAccounts() {
-        return customerAccounts;
-    }
+    // -- Setters --
 
-    public void setCustomerId(Long customerId) {
+    @SuppressWarnings("unused")
+    private void setCustomerId(Long customerId) {
         this.customerId = customerId;
     }
 
@@ -110,7 +112,4 @@ public class Customer {
         this.updatedAt = updatedAt;
     }
 
-    public void setCustomerAccounts(List<CustomerAccount> customerAccounts) {
-        this.customerAccounts = customerAccounts;
-    }
 }

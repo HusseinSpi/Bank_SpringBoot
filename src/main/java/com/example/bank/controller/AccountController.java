@@ -7,6 +7,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+/**
+ * يتحكم في عمليات CRUD على كائنات Account.
+ */
 @RestController
 @RequestMapping("/api/accounts")
 public class AccountController {
@@ -18,27 +21,44 @@ public class AccountController {
         this.accountService = accountService;
     }
 
+    /**
+     * إنشاء حساب جديد.
+     * يتم إرسال بيانات الحساب في الـ Request Body.
+     */
     @PostMapping
     public Account createAccount(@RequestBody Account account) {
         return accountService.createAccount(account);
     }
 
+    /**
+     * الحصول على حساب عبر معرّفه (ID).
+     */
     @GetMapping("/{id}")
     public Account getAccount(@PathVariable Long id) {
         return accountService.getAccountById(id);
     }
 
+    /**
+     * الحصول على جميع الحسابات.
+     */
     @GetMapping
     public List<Account> getAllAccounts() {
         return accountService.getAllAccounts();
     }
 
+    /**
+     * تعديل حساب موجود عبر ID.
+     * لا نستطيع استخدام setAccountId(id) مباشرةً، بل نمرّر id للمنهجية في الخدمة (Service).
+     */
     @PutMapping("/{id}")
-    public Account updateAccount(@PathVariable Long id, @RequestBody Account account) {
-        account.setAccountId(id);
-        return accountService.updateAccount(account);
+    public Account updateAccount(@PathVariable Long id, @RequestBody Account updatedAccount) {
+        // نقوم بإرسال المعرّف والبيانات الجديدة إلى الـ Service.
+        return accountService.updateAccount(id, updatedAccount);
     }
 
+    /**
+     * حذف حساب عبر ID.
+     */
     @DeleteMapping("/{id}")
     public void deleteAccount(@PathVariable Long id) {
         accountService.deleteAccount(id);

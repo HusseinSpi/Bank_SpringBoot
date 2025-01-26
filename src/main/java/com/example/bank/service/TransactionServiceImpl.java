@@ -5,6 +5,7 @@ import com.example.bank.repository.TransactionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -19,7 +20,7 @@ public class TransactionServiceImpl implements TransactionService {
 
     @Override
     public Transaction createTransaction(Transaction transaction) {
-        // e.g. set timestamp, validate accounts, handle logic, etc.
+        transaction.setTimestamp(LocalDateTime.now());
         return transactionRepository.save(transaction);
     }
 
@@ -34,8 +35,20 @@ public class TransactionServiceImpl implements TransactionService {
     }
 
     @Override
-    public Transaction updateTransaction(Transaction transaction) {
-        return transactionRepository.save(transaction);
+    public Transaction updateTransaction(Long id, Transaction updatedTransaction) {
+        Transaction existingTransaction = transactionRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Transaction not found"));
+
+        existingTransaction.setAmount(updatedTransaction.getAmount());
+        existingTransaction.setCurrency(updatedTransaction.getCurrency());
+        existingTransaction.setTimestamp(LocalDateTime.now());
+        existingTransaction.setTransferMode(updatedTransaction.getTransferMode());
+        existingTransaction.setTransactionType(updatedTransaction.getTransactionType());
+        existingTransaction.setDestinationAccount(updatedTransaction.getDestinationAccount());
+        existingTransaction.setSourceAccount(updatedTransaction.getSourceAccount());
+        existingTransaction.setCard(updatedTransaction.getCard());
+
+        return transactionRepository.save(existingTransaction);
     }
 
     @Override

@@ -44,64 +44,69 @@ public class Loan {
     public Loan() {
     }
 
+    // -- Getters --
+
     public Long getLoanId() {
         return loanId;
-    }
-
-    public void setLoanId(Long loanId) {
-        this.loanId = loanId;
     }
 
     public Customer getCustomer() {
         return customer;
     }
 
-    public void setCustomer(Customer customer) {
-        this.customer = customer;
-    }
-
     public BigDecimal getAmount() {
         return amount;
-    }
-
-    public void setAmount(BigDecimal amount) {
-        this.amount = amount;
     }
 
     public String getCurrency() {
         return currency;
     }
 
-    public void setCurrency(String currency) {
-        this.currency = currency;
-    }
-
     public BigDecimal getInterestRate() {
         return interestRate;
-    }
-
-    public void setInterestRate(BigDecimal interestRate) {
-        this.interestRate = interestRate;
     }
 
     public LoanStatus getLoanStatus() {
         return loanStatus;
     }
 
-    public void setLoanStatus(LoanStatus loanStatus) {
-        this.loanStatus = loanStatus;
-    }
-
     public LocalDateTime getCreatedAt() {
         return createdAt;
     }
 
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
-
     public LocalDateTime getUpdatedAt() {
         return updatedAt;
+    }
+
+    // -- Setters --
+
+    @SuppressWarnings("unused")
+    private void setLoanId(Long loanId) {
+        this.loanId = loanId;
+    }
+
+    public void setCustomer(Customer customer) {
+        this.customer = customer;
+    }
+
+    public void setAmount(BigDecimal amount) {
+        this.amount = amount;
+    }
+
+    public void setCurrency(String currency) {
+        this.currency = currency;
+    }
+
+    public void setInterestRate(BigDecimal interestRate) {
+        this.interestRate = interestRate;
+    }
+
+    public void setLoanStatus(LoanStatus loanStatus) {
+        this.loanStatus = loanStatus;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
     }
 
     public void setUpdatedAt(LocalDateTime updatedAt) {
