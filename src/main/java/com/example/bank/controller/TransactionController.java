@@ -7,9 +7,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-/**
- * يتحكم في عمليات CRUD على كائنات Transaction (المعاملات).
- */
 @RestController
 @RequestMapping("/api/transactions")
 public class TransactionController {
@@ -21,17 +18,11 @@ public class TransactionController {
         this.transactionService = transactionService;
     }
 
-    /**
-     * إنشاء معاملة جديدة.
-     */
     @PostMapping
     public Transaction createTransaction(@RequestBody Transaction transaction) {
         return transactionService.createTransaction(transaction);
     }
 
-    /**
-     * الحصول على معاملة عبر معرّفها (ID).
-     */
     @GetMapping("/{id}")
     public Transaction getTransaction(@PathVariable Long id) {
         return transactionService.getTransactionById(id);

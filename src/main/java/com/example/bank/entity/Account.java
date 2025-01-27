@@ -36,15 +36,12 @@ public class Account {
     @Column(name = "account_id")
     private Long accountId;
 
-    // رقم الحساب (فريد) مكوّن من 6 أرقام
     @Column(name = "account_number", nullable = false, length = 6, unique = true)
     private String accountNumber;
 
-    // الرصيد
     @Column(nullable = false)
     private BigDecimal balance;
 
-    // نوع العملة
     @Enumerated(EnumType.STRING)
     @Column(name = "currency", length = 10, nullable = false)
     private Currency currency;
@@ -66,8 +63,8 @@ public class Account {
     private LocalDateTime updatedAt;
 
     // العلاقة مع CustomerAccount (جسر ManyToMany بين Customer و Account)
-    @OneToMany(mappedBy = "account", cascade = CascadeType.ALL)
-    private List<CustomerAccount> customerAccounts = new ArrayList<>();
+//    @OneToMany(mappedBy = "account", cascade = CascadeType.ALL)
+//    private List<CustomerAccount> customerAccounts = new ArrayList<>();
 
     // العلاقة مع الكروت
     @OneToMany(mappedBy = "account", cascade = CascadeType.ALL)
@@ -129,9 +126,9 @@ public class Account {
         return updatedAt;
     }
 
-    public List<CustomerAccount> getCustomerAccounts() {
-        return customerAccounts;
-    }
+//    public List<CustomerAccount> getCustomerAccounts() {
+//        return customerAccounts;
+//    }
 
     public List<Card> getCards() {
         return cards;
@@ -173,18 +170,14 @@ public class Account {
         this.updatedAt = updatedAt;
     }
 
-    public void setCustomerAccounts(List<CustomerAccount> customerAccounts) {
-        this.customerAccounts = customerAccounts;
-    }
+//    public void setCustomerAccounts(List<CustomerAccount> customerAccounts) {
+//        this.customerAccounts = customerAccounts;
+//    }
 
     public void setCards(List<Card> cards) {
         this.cards = cards;
     }
 
-    /**
-     * طريقة لإيداع مبلغ معين في الرصيد.
-     * @param amount المبلغ المراد إيداعه
-     */
     public void deposit(BigDecimal amount) {
         if (amount == null || amount.compareTo(BigDecimal.ZERO) < 0) {
             throw new IllegalArgumentException("The deposited amount must be a positive number.");

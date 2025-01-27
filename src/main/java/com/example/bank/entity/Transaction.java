@@ -24,9 +24,11 @@ public class Transaction {
     @Column(name = "transaction_id")
     private Long transactionId;
 
+    @Column(length = 255)
+    private String description;
+
     @Column(nullable = false, precision = 10, scale = 2)
     private BigDecimal amount;
-
     @Column(length = 10, nullable = false)
     private String currency;
 
@@ -42,8 +44,9 @@ public class Transaction {
     private TransactionType transactionType;
 
     @ManyToOne
-    @JoinColumn(name = "destination_account")
+    @JoinColumn(name = "destination_account", nullable = false)
     private Account destinationAccount;
+
 
     @ManyToOne
     @JoinColumn(name = "source_account")
@@ -74,7 +77,24 @@ public class Transaction {
         this.sourceAccount = sourceAccount;
         this.card = card;
     }
+    public String getDescription() {
+        return description;
+    }
 
+    public void setDescription(String description) {
+        this.description = description;
+    }
+    public Transaction(BigDecimal amount,
+                       String currency,
+                       TransferMode transferMode,
+                       TransactionType transactionType,
+                       Account destinationAccount) {
+        this.amount = amount;
+        this.currency = currency;
+        this.transferMode = transferMode;
+        this.transactionType = transactionType;
+        this.destinationAccount = destinationAccount;
+    }
     // -- Getters --
 
     public Long getTransactionId() {

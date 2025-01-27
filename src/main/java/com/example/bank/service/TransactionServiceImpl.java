@@ -1,6 +1,8 @@
 package com.example.bank.service;
 
+import com.example.bank.entity.Account;
 import com.example.bank.entity.Transaction;
+import com.example.bank.repository.AccountRepository;
 import com.example.bank.repository.TransactionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -10,19 +12,57 @@ import java.util.List;
 
 @Service
 public class TransactionServiceImpl implements TransactionService {
-
     private final TransactionRepository transactionRepository;
+    private final AccountRepository accountRepository;
 
     @Autowired
-    public TransactionServiceImpl(TransactionRepository transactionRepository) {
+    public TransactionServiceImpl(TransactionRepository transactionRepository,
+                                  AccountRepository accountRepository) {
         this.transactionRepository = transactionRepository;
+        this.accountRepository = accountRepository;
     }
 
     @Override
     public Transaction createTransaction(Transaction transaction) {
-        transaction.setTimestamp(LocalDateTime.now());
-        return transactionRepository.save(transaction);
+        Transaction.TransactionType transactionType;
+        Transaction.TransferMode transferMode;
+        try {
+            transactionType = transaction.getTransactionType();
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException("Invalid transaction type: " + transaction.getTransactionType());
+        }
+
+        try {
+            transferMode = transaction.getTransferMode();
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException("Invalid transfer mode: " + transaction.getTransferMode());
+        }
+
+        Account destinationAccount = accountRepository.findById(transaction.getDestinationAccount().getAccountId())
+                .orElseThrow(() -> new RuntimeException("Destination account not found with ID: " + transaction.getDestinationAccount()));
+
+        // Update the account's balance
+        destinationAccount.deposit(transaction.getAmount());
+        accountRepository.save(destinationAccount);
+
+        // Create and populate the Transaction entity
+        Transaction newtransaction = new Transaction();
+        newtransaction.setAmount(transaction.getAmount());
+        newtransaction.setCurrency(transaction.getCurrency());
+        newtransaction.setTransferMode(transferMode);
+        newtransaction.setTransactionType(transactionType);
+        newtransaction.setDestinationAccount(transaction.getDestinationAccount());
+        newtransaction.setTimestamp(LocalDateTime.now());
+        newtransaction.setDescription(transaction.getDescription());
+
+        // Optionally, set sourceAccount or card if applicable
+        // For DEPOSIT, sourceAccount might be null or a predefined system account
+
+        // Save the transaction
+        newtransaction.setTimestamp(LocalDateTime.now());
+        return transactionRepository.save(newtransaction);
     }
+
 
     @Override
     public Transaction getTransactionById(Long id) {
