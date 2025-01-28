@@ -4,12 +4,15 @@ import com.example.bank.entity.Account;
 import com.example.bank.entity.Transaction;
 import com.example.bank.repository.AccountRepository;
 import com.example.bank.repository.TransactionRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 
+@Slf4j
 @Service
 public class TransactionServiceImpl implements TransactionService {
     private final TransactionRepository transactionRepository;
@@ -26,6 +29,7 @@ public class TransactionServiceImpl implements TransactionService {
     public Transaction createTransaction(Transaction transaction) {
         Transaction.TransactionType transactionType;
         Transaction.TransferMode transferMode;
+
         try {
             transactionType = transaction.getTransactionType();
         } catch (IllegalArgumentException e) {
@@ -40,12 +44,29 @@ public class TransactionServiceImpl implements TransactionService {
 
         Account destinationAccount = accountRepository.findById(transaction.getDestinationAccount().getAccountId())
                 .orElseThrow(() -> new RuntimeException("Destination account not found with ID: " + transaction.getDestinationAccount()));
+        if(Objects.equals(destinationAccount.getAccountNumber(), transaction.getDestinationAccount().getAccountNumber())){
 
-        // Update the account's balance
-        destinationAccount.deposit(transaction.getAmount());
+         switch (transactionType){
+             case Transaction.TransactionType.DEPOSIT:
+                destinationAccount.deposit(transaction.getAmount());
+
+                 break;
+             case Transaction.TransactionType.WITHDRAWAL:
+                destinationAccount.withdraw(transaction.getAmount());
+                 break;
+             case Transaction.TransactionType.TRANSFER:
+                 Account sourAccount = accountRepository.findById(transaction.getSourceAccount().getAccountId())
+                         .orElseThrow(() -> new RuntimeException("Source account not found with ID: " + transaction.getSourceAccount()));
+                destinationAccount.deposit(transaction.getAmount());
+                 System.out.println("sourAccount.toString()"+sourAccount.toString());
+                sourAccount.withdraw(transaction.getAmount());
+                 System.out.println("sourAccount.toString()"+sourAccount.toString());
+
+                 break;
+
+        }
         accountRepository.save(destinationAccount);
 
-        // Create and populate the Transaction entity
         Transaction newtransaction = new Transaction();
         newtransaction.setAmount(transaction.getAmount());
         newtransaction.setCurrency(transaction.getCurrency());
@@ -54,13 +75,10 @@ public class TransactionServiceImpl implements TransactionService {
         newtransaction.setDestinationAccount(transaction.getDestinationAccount());
         newtransaction.setTimestamp(LocalDateTime.now());
         newtransaction.setDescription(transaction.getDescription());
-
-        // Optionally, set sourceAccount or card if applicable
-        // For DEPOSIT, sourceAccount might be null or a predefined system account
-
-        // Save the transaction
         newtransaction.setTimestamp(LocalDateTime.now());
         return transactionRepository.save(newtransaction);
+    }
+return null;
     }
 
 

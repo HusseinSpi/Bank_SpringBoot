@@ -11,6 +11,14 @@ import java.util.Random;
 @Table(name = "accounts")
 public class Account {
 
+    public Account(String accountNumber, Currency currency, AccountStatus status, AccountType accountType, List<Card> cards) {
+        this.accountNumber = accountNumber;
+        this.currency = currency;
+        this.status = status;
+        this.accountType = accountType;
+        this.cards = cards;
+    }
+
     public enum AccountStatus {
         ACTIVE,
         RESTRICTED,
@@ -36,7 +44,22 @@ public class Account {
     @Column(name = "account_id")
     private Long accountId;
 
-    @Column(name = "account_number", nullable = false, length = 6, unique = true)
+    @Override
+    public String toString() {
+        return "Account{" +
+                "accountId=" + accountId +
+                ", accountNumber='" + accountNumber + '\'' +
+                ", balance=" + balance +
+                ", currency=" + currency +
+                ", status=" + status +
+                ", accountType=" + accountType +
+                ", createdAt=" + createdAt +
+                ", updatedAt=" + updatedAt +
+                ", cards=" + cards +
+                '}';
+    }
+
+    @Column(name = "account_number", nullable = true, length = 6, unique = true)
     private String accountNumber;
 
     @Column(nullable = false)
@@ -62,9 +85,6 @@ public class Account {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-    // العلاقة مع CustomerAccount (جسر ManyToMany بين Customer و Account)
-//    @OneToMany(mappedBy = "account", cascade = CascadeType.ALL)
-//    private List<CustomerAccount> customerAccounts = new ArrayList<>();
 
     // العلاقة مع الكروت
     @OneToMany(mappedBy = "account", cascade = CascadeType.ALL)
@@ -143,11 +163,14 @@ public class Account {
     }
 
     @SuppressWarnings("unused")
-    private void setAccountNumber(String accountNumber) {
+    public void setAccountNumber(String accountNumber) {
+        this.accountNumber = accountNumber;
     }
+
 
     @SuppressWarnings("unused")
     private void setBalance(BigDecimal balance) {
+        this.balance=balance;
     }
 
     public void setCurrency(Currency currency) {
@@ -170,9 +193,6 @@ public class Account {
         this.updatedAt = updatedAt;
     }
 
-//    public void setCustomerAccounts(List<CustomerAccount> customerAccounts) {
-//        this.customerAccounts = customerAccounts;
-//    }
 
     public void setCards(List<Card> cards) {
         this.cards = cards;
@@ -185,10 +205,6 @@ public class Account {
         this.balance = this.balance.add(amount);
     }
 
-    /**
-     * طريقة لسحب مبلغ معين من الرصيد.
-     * @param amount المبلغ المراد سحبه
-     */
     public void withdraw(BigDecimal amount) {
         if (amount == null || amount.compareTo(BigDecimal.ZERO) < 0) {
             throw new IllegalArgumentException("The withdrawn amount must be a positive number.");

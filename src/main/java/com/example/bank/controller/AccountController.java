@@ -19,13 +19,13 @@ public class AccountController {
         this.accountService = accountService;
     }
 
-    /**
-     * Endpoint to create a new account for a specific customer.
-     *
-     * @param customerId ID of the customer.
-     * @param account    Account details in the request body.
-     * @return The created Account.
-     */
+//    /**
+//     * Endpoint to create a new account for a specific customer.
+//     *
+//     * @param customerId ID of the customer.
+//     * @param account    Account details in the request body.
+//     * @return The created Account.
+//     */
     @PostMapping("/{customer_id}")
     public ResponseEntity<Account> createAccount(
             @PathVariable("customer_id") Long customerId,

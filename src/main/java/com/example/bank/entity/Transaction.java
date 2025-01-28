@@ -8,6 +8,22 @@ import java.time.LocalDateTime;
 @Table(name = "transactions")
 public class Transaction {
 
+    @Override
+    public String toString() {
+        return "Transaction{" +
+                "transactionId=" + transactionId +
+                ", destinationAccount=" + destinationAccount +
+                ", description='" + description + '\'' +
+                ", amount=" + amount +
+                ", currency='" + currency + '\'' +
+                ", timestamp=" + timestamp +
+                ", transferMode=" + transferMode +
+                ", transactionType=" + transactionType +
+                ", sourceAccount=" + sourceAccount +
+                ", card=" + card +
+                '}';
+    }
+
     public enum TransferMode {
         INTERNAL,
         EXTERNAL
@@ -16,7 +32,7 @@ public class Transaction {
     public enum TransactionType {
         DEPOSIT,
         WITHDRAWAL,
-        TRANSFER
+        TransactionType, TRANSFER
     }
 
     @Id
