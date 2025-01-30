@@ -14,9 +14,29 @@ public class Account {
     public Account(String accountNumber, Currency currency, AccountStatus status, AccountType accountType, List<Card> cards) {
         this.accountNumber = accountNumber;
         this.currency = currency;
+    }
+    public Account() {}
+
+    public Account(Long accountId, String accountNumber, BigDecimal balance, Currency currency,
+                              AccountStatus status, AccountType accountType, LocalDateTime createdAt,
+                              LocalDateTime updatedAt) {
+        this.accountId = accountId;
+        this.accountNumber = accountNumber;
+        this.balance = balance;
+        this.currency = currency;
         this.status = status;
         this.accountType = accountType;
-        this.cards = cards;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
+    }
+    private List<Long> customerIds;
+    public List<Long> getCustomerIds() {
+        return customerIds;
+    }
+
+    // Setter
+    public void setCustomerIds(List<Long> customerIds) {
+        this.customerIds = customerIds;
     }
 
     public enum AccountStatus {
@@ -69,12 +89,10 @@ public class Account {
     @Column(name = "currency", length = 10, nullable = false)
     private Currency currency;
 
-    // حالة الحساب
     @Enumerated(EnumType.STRING)
     @Column(length = 20, nullable = false)
     private AccountStatus status;
 
-    // نوع الحساب
     @Enumerated(EnumType.STRING)
     @Column(name = "account_type", length = 20, nullable = false)
     private AccountType accountType;
@@ -85,14 +103,23 @@ public class Account {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
+//    @OneToMany(mappedBy = "account", cascade = CascadeType.ALL, orphanRemoval = true)
+//    private List<CustomerAccount> customerAccounts = new ArrayList<>();
 
-    // العلاقة مع الكروت
+// Getters and Setters
+
+//    public List<CustomerAccount> getCustomerAccounts() {
+//        return customerAccounts;
+//    }
+//
+//    public void setCustomerAccounts(List<CustomerAccount> customerAccounts) {
+//        this.customerAccounts = customerAccounts;
+//    }
+
+
     @OneToMany(mappedBy = "account", cascade = CascadeType.ALL)
     private List<Card> cards = new ArrayList<>();
 
-    public Account() {
-        this.balance = BigDecimal.ZERO;
-    }
 
     @PrePersist
     public void prePersist() {
@@ -146,9 +173,6 @@ public class Account {
         return updatedAt;
     }
 
-//    public List<CustomerAccount> getCustomerAccounts() {
-//        return customerAccounts;
-//    }
 
     public List<Card> getCards() {
         return cards;
@@ -158,7 +182,7 @@ public class Account {
 
 
     @SuppressWarnings("unused")
-    private void setAccountId(Long accountId) {
+    public void setAccountId(Long accountId) {
         this.accountId = accountId;
     }
 
@@ -169,7 +193,7 @@ public class Account {
 
 
     @SuppressWarnings("unused")
-    private void setBalance(BigDecimal balance) {
+    public void setBalance(BigDecimal balance) {
         this.balance=balance;
     }
 
