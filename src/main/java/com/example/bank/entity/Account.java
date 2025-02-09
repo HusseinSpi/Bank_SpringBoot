@@ -1,5 +1,6 @@
 package com.example.bank.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -11,7 +12,7 @@ import java.util.Random;
 @Table(name = "accounts")
 public class Account {
 
-    public Account(String accountNumber, Currency currency, AccountStatus status, AccountType accountType, List<Card> cards) {
+    public Account(String accountNumber, Currency currency, AccountStatus status, AccountType accountType) {
         this.accountNumber = accountNumber;
         this.currency = currency;
     }
@@ -75,7 +76,7 @@ public class Account {
                 ", accountType=" + accountType +
                 ", createdAt=" + createdAt +
                 ", updatedAt=" + updatedAt +
-                ", cards=" + cards +
+//                ", cards=" + cards +
                 '}';
     }
 
@@ -102,24 +103,21 @@ public class Account {
 
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
-
-//    @OneToMany(mappedBy = "account", cascade = CascadeType.ALL, orphanRemoval = true)
-//    private List<CustomerAccount> customerAccounts = new ArrayList<>();
-
-// Getters and Setters
-
-//    public List<CustomerAccount> getCustomerAccounts() {
-//        return customerAccounts;
-//    }
-//
-//    public void setCustomerAccounts(List<CustomerAccount> customerAccounts) {
-//        this.customerAccounts = customerAccounts;
-//    }
-
-
-    @OneToMany(mappedBy = "account", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "account", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
     private List<Card> cards = new ArrayList<>();
+    public List<Card> getCards() {
+        return cards;
+    }
 
+    public void setCards(List<Card> cards) {
+        this.cards = cards;
+    }
+
+    public void addCard(Card card) {
+        card.setAccount(this);
+        this.cards.add(card);
+    }
 
     @PrePersist
     public void prePersist() {
@@ -174,11 +172,6 @@ public class Account {
     }
 
 
-    public List<Card> getCards() {
-        return cards;
-    }
-
-    // -- Setters --
 
 
     @SuppressWarnings("unused")
@@ -218,9 +211,7 @@ public class Account {
     }
 
 
-    public void setCards(List<Card> cards) {
-        this.cards = cards;
-    }
+
 
     public void deposit(BigDecimal amount) {
         if (amount == null || amount.compareTo(BigDecimal.ZERO) < 0) {
@@ -229,12 +220,15 @@ public class Account {
         this.balance = this.balance.add(amount);
     }
 
-    public void withdraw(BigDecimal amount) {
+    public void withdraw(BigDecimal amount,Card card) {
         if (amount == null || amount.compareTo(BigDecimal.ZERO) < 0) {
             throw new IllegalArgumentException("The withdrawn amount must be a positive number.");
         }
-        if (this.balance.compareTo(amount) < 0) {
+
+        if (this.balance.compareTo(amount) < 0 ) {
+            if(card == null || (card.getCardType() != Card.CardType.CREDIT||this.balance.compareTo(amount) < -1000)){
             throw new IllegalArgumentException("Current balance does not allow withdrawal.");
+            }
         }
         if (this.status != AccountStatus.ACTIVE) {
             throw new IllegalArgumentException("Account is currently inactive please contact your bank.");

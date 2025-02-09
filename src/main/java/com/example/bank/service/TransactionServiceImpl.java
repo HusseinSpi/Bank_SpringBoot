@@ -1,8 +1,10 @@
 package com.example.bank.service;
 
 import com.example.bank.entity.Account;
+import com.example.bank.entity.Card;
 import com.example.bank.entity.Transaction;
 import com.example.bank.repository.AccountRepository;
+import com.example.bank.repository.CardRepository;
 import com.example.bank.repository.TransactionRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,15 +18,17 @@ import java.util.Objects;
 @Service
 public class TransactionServiceImpl implements TransactionService {
     private final TransactionRepository transactionRepository;
+    private final CardRepository cardRepository;
     private final AccountRepository accountRepository;
 
     @Autowired
-    public TransactionServiceImpl(TransactionRepository transactionRepository,
+    public TransactionServiceImpl(TransactionRepository transactionRepository, CardRepository cardRepository,
                                   AccountRepository accountRepository) {
         this.transactionRepository = transactionRepository;
+        this.cardRepository = cardRepository;
         this.accountRepository = accountRepository;
     }
-        //DONE
+
     @Override
     public Transaction createTransaction(Transaction transaction) {
         Transaction.TransactionType transactionType;
@@ -41,37 +45,49 @@ public class TransactionServiceImpl implements TransactionService {
         } catch (IllegalArgumentException e) {
             throw new IllegalArgumentException("Invalid transfer mode: " + transaction.getTransferMode());
         }
+        Account destinationAccount=null;
+        System.out.println(transaction.getCard());
+        Card destinationCard = null;
+        if (transaction.getCard() != null) {
+            destinationCard = cardRepository.findByCardNumber(
+                    transaction.getCard().getCardNumber(),
+                    transaction.getCard().getPassword()
+            ).orElseThrow(() ->
+                    new RuntimeException("Destination Card not found with card number: "
+                            + transaction.getCard().getCardNumber() + " and password "
+                            + transaction.getCard().getPassword())
+            );
+            destinationAccount = destinationCard.getAccount();
+        }
+        else {
 
-        Account destinationAccount = accountRepository.findByAccountNumber(transaction.getDestinationAccount().getAccountNumber())
+        destinationAccount = accountRepository.findByAccountNumber(transaction.getDestinationAccount().getAccountNumber())
                 .orElseThrow(() -> new RuntimeException("Destination account not found with account number: " + transaction.getDestinationAccount().getAccountNumber()));
+        }
         Account sourAccount = null;
-        if (Objects.equals(destinationAccount.getAccountNumber(), transaction.getDestinationAccount().getAccountNumber())) {
 
             switch (transactionType) {
                 case Transaction.TransactionType.DEPOSIT:
                     destinationAccount.deposit(transaction.getAmount());
                     break;
                 case Transaction.TransactionType.WITHDRAWAL:
-                    destinationAccount.withdraw(transaction.getAmount());
+                    destinationAccount.withdraw(transaction.getAmount(),destinationCard);
                     break;
                 case Transaction.TransactionType.TRANSFER:
-                    // Initialize sourAccount only for TRANSFER
                     sourAccount = accountRepository.findByAccountNumber(transaction.getSourceAccount().getAccountNumber())
                             .orElseThrow(() -> new RuntimeException("Source account not found with account number: " + transaction.getSourceAccount().getAccountNumber()));
 
                     destinationAccount.deposit(transaction.getAmount());
                     System.out.println("sourAccount before withdrawal: " + sourAccount.toString());
-                    sourAccount.withdraw(transaction.getAmount());
+                    sourAccount.withdraw(transaction.getAmount(),destinationCard);
                     System.out.println("sourAccount after withdrawal: " + sourAccount.toString());
                     break;
                 default:
                     throw new IllegalArgumentException("Unsupported transaction type: " + transactionType);
             }
 
-            // Save the destination account after processing
             accountRepository.save(destinationAccount);
 
-            // Create the new transaction
             Transaction newTransaction = new Transaction();
             newTransaction.setAmount(transaction.getAmount());
             newTransaction.setCurrency(transaction.getCurrency());
@@ -81,18 +97,12 @@ public class TransactionServiceImpl implements TransactionService {
             newTransaction.setTimestamp(LocalDateTime.now());
             newTransaction.setDescription(transaction.getDescription());
 
-            // If it's a TRANSFER, handle the source account
             if (transactionType == Transaction.TransactionType.TRANSFER && sourAccount != null) {
-                accountRepository.save(sourAccount); // Save the updated source account
-                newTransaction.setSourceAccount(sourAccount); // Set the source account in the transaction
+                accountRepository.save(sourAccount);
+                newTransaction.setSourceAccount(sourAccount);
             }
 
-            // Save and return the new transaction
             return transactionRepository.save(newTransaction);
-        }
-
-// If destination account doesn't match, return null or handle accordingly
-        return null;
     }
 
 
