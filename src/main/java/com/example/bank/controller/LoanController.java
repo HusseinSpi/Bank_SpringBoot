@@ -5,11 +5,11 @@ import com.example.bank.service.LoanService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
 
-/**
- * يتحكم في عمليات CRUD على كائنات Loan (القروض).
- */
+
 @RestController
 @RequestMapping("/api/loans")
 public class LoanController {
@@ -20,45 +20,39 @@ public class LoanController {
     public LoanController(LoanService loanService) {
         this.loanService = loanService;
     }
+    public class PaymentRequest {
+        private BigDecimal paymentAmount;
+        // getters and setters
+    }
 
-    /**
-     * إنشاء Loan جديد.
-     */
     @PostMapping
     public Loan createLoan(@RequestBody Loan loan) {
         return loanService.createLoan(loan);
     }
 
-    /**
-     * الحصول على Loan عبر معرّفه (ID).
-     */
     @GetMapping("/{id}")
     public Loan getLoan(@PathVariable Long id) {
         return loanService.getLoanById(id);
     }
 
-    /**
-     * الحصول على جميع القروض.
-     */
     @GetMapping
     public List<Loan> getAllLoans() {
         return loanService.getAllLoans();
     }
-
-    /**
-     * تعديل Loan موجود عبر ID.
-     */
     @PutMapping("/{id}")
     public Loan updateLoan(@PathVariable Long id, @RequestBody Loan updatedLoan) {
-        // لا نستطيع استخدام setLoanId(id). بدلاً من ذلك نمرر المعرف للـ Service.
         return loanService.updateLoan(id, updatedLoan);
     }
 
-    /**
-     * حذف Loan عبر ID.
-     */
     @DeleteMapping("/{id}")
     public void deleteLoan(@PathVariable Long id) {
         loanService.deleteLoan(id);
     }
+
+    @PostMapping("/{loanId}/pay")
+    public Loan payLoan(@PathVariable Long loanId, @RequestBody Map<String, BigDecimal> payload) {
+        BigDecimal paymentAmount = payload.get("paymentAmount");
+        return loanService.payLoan(loanId, paymentAmount);
+    }
+
 }

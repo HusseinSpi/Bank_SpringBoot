@@ -12,15 +12,31 @@ public class Loan {
         ACTIVE,
         CLOSED
     }
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "loan_id")
     private Long loanId;
 
+
+    @Override
+    public String toString() {
+        return "Loan{" +
+                "loanId=" + loanId +
+                ", account=" + account +
+                ", amount=" + amount +
+                ", currency='" + currency + '\'' +
+                ", interestRate=" + interestRate +
+                ", remainingAmount=" + remainingAmount +
+                ", loanStatus=" + loanStatus +
+                ", createdAt=" + createdAt +
+                ", updatedAt=" + updatedAt +
+                ", dueDate=" + dueDate +
+                '}';
+    }
+
     @ManyToOne
-    @JoinColumn(name = "customer_id", nullable = false)
-    private Customer customer;
+    @JoinColumn(name = "account_id", nullable = false)
+    private Account account;
 
     @Column(nullable = false, precision = 10, scale = 2)
     private BigDecimal amount;
@@ -30,6 +46,9 @@ public class Loan {
 
     @Column(name = "interest_rate", precision = 5, scale = 2, nullable = false)
     private BigDecimal interestRate;
+
+    @Column(name = "remaining_amount", precision = 10, scale = 2)
+    private BigDecimal remainingAmount;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "loan_status", length = 10, nullable = false)
@@ -41,6 +60,10 @@ public class Loan {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
+    // New: Add a due date field (deadline for loan repayment)
+    @Column(name = "due_date")
+    private LocalDateTime dueDate;
+
     public Loan() {
     }
 
@@ -50,8 +73,12 @@ public class Loan {
         return loanId;
     }
 
-    public Customer getCustomer() {
-        return customer;
+//    public Customer getCustomer() {
+//        return customer;
+//    }
+
+    public Account getAccount() {
+        return account;
     }
 
     public BigDecimal getAmount() {
@@ -78,6 +105,13 @@ public class Loan {
         return updatedAt;
     }
 
+    public LocalDateTime getDueDate() {
+        return dueDate;
+    }
+
+    public BigDecimal getRemainingAmount() {
+        return remainingAmount;
+    }
     // -- Setters --
 
     @SuppressWarnings("unused")
@@ -85,8 +119,8 @@ public class Loan {
         this.loanId = loanId;
     }
 
-    public void setCustomer(Customer customer) {
-        this.customer = customer;
+    public void setAccount(Account account) {
+        this.account = account;
     }
 
     public void setAmount(BigDecimal amount) {
@@ -111,5 +145,12 @@ public class Loan {
 
     public void setUpdatedAt(LocalDateTime updatedAt) {
         this.updatedAt = updatedAt;
+    }
+
+    public void setDueDate(LocalDateTime dueDate) {
+        this.dueDate = dueDate;
+    }
+    public void setRemainingAmount(BigDecimal remainingAmount) {
+        this.remainingAmount = remainingAmount;
     }
 }
