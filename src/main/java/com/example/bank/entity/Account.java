@@ -1,5 +1,6 @@
 package com.example.bank.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -11,12 +12,32 @@ import java.util.Random;
 @Table(name = "accounts")
 public class Account {
 
-    public Account(String accountNumber, Currency currency, AccountStatus status, AccountType accountType, List<Card> cards) {
+    public Account(String accountNumber, Currency currency, AccountStatus status, AccountType accountType) {
         this.accountNumber = accountNumber;
+        this.currency = currency;
+    }
+    public Account() {}
+
+    public Account(Long accountId, String accountNumber, BigDecimal balance, Currency currency,
+                              AccountStatus status, AccountType accountType, LocalDateTime createdAt,
+                              LocalDateTime updatedAt) {
+        this.accountId = accountId;
+        this.accountNumber = accountNumber;
+        this.balance = balance;
         this.currency = currency;
         this.status = status;
         this.accountType = accountType;
-        this.cards = cards;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
+    }
+    private List<Long> customerIds;
+    public List<Long> getCustomerIds() {
+        return customerIds;
+    }
+
+    // Setter
+    public void setCustomerIds(List<Long> customerIds) {
+        this.customerIds = customerIds;
     }
 
     public enum AccountStatus {
@@ -36,7 +57,7 @@ public class Account {
         USD,
         EUR,
         GBP,
-        NIS
+        ILS
     }
 
     @Id
@@ -69,12 +90,10 @@ public class Account {
     @Column(name = "currency", length = 10, nullable = false)
     private Currency currency;
 
-    // حالة الحساب
     @Enumerated(EnumType.STRING)
     @Column(length = 20, nullable = false)
     private AccountStatus status;
 
-    // نوع الحساب
     @Enumerated(EnumType.STRING)
     @Column(name = "account_type", length = 20, nullable = false)
     private AccountType accountType;
@@ -84,14 +103,20 @@ public class Account {
 
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
-
-
-    // العلاقة مع الكروت
-    @OneToMany(mappedBy = "account", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "account", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
     private List<Card> cards = new ArrayList<>();
+    public List<Card> getCards() {
+        return cards;
+    }
 
-    public Account() {
-        this.balance = BigDecimal.ZERO;
+    public void setCards(List<Card> cards) {
+        this.cards = cards;
+    }
+
+    public void addCard(Card card) {
+        card.setAccount(this);
+        this.cards.add(card);
     }
 
     @PrePersist
@@ -146,19 +171,11 @@ public class Account {
         return updatedAt;
     }
 
-//    public List<CustomerAccount> getCustomerAccounts() {
-//        return customerAccounts;
-//    }
 
-    public List<Card> getCards() {
-        return cards;
-    }
-
-    // -- Setters --
 
 
     @SuppressWarnings("unused")
-    private void setAccountId(Long accountId) {
+    public void setAccountId(Long accountId) {
         this.accountId = accountId;
     }
 
@@ -169,7 +186,7 @@ public class Account {
 
 
     @SuppressWarnings("unused")
-    private void setBalance(BigDecimal balance) {
+    public void setBalance(BigDecimal balance) {
         this.balance=balance;
     }
 
@@ -194,9 +211,7 @@ public class Account {
     }
 
 
-    public void setCards(List<Card> cards) {
-        this.cards = cards;
-    }
+
 
     public void deposit(BigDecimal amount) {
         if (amount == null || amount.compareTo(BigDecimal.ZERO) < 0) {
@@ -205,12 +220,15 @@ public class Account {
         this.balance = this.balance.add(amount);
     }
 
-    public void withdraw(BigDecimal amount) {
+    public void withdraw(BigDecimal amount,Card card) {
         if (amount == null || amount.compareTo(BigDecimal.ZERO) < 0) {
             throw new IllegalArgumentException("The withdrawn amount must be a positive number.");
         }
-        if (this.balance.compareTo(amount) < 0) {
+
+        if (this.balance.compareTo(amount) < 0 ) {
+            if(card == null || (card.getCardType() != Card.CardType.CREDIT||this.balance.compareTo(amount) < -1000)){
             throw new IllegalArgumentException("Current balance does not allow withdrawal.");
+            }
         }
         if (this.status != AccountStatus.ACTIVE) {
             throw new IllegalArgumentException("Account is currently inactive please contact your bank.");

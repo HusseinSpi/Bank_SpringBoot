@@ -1,6 +1,8 @@
 package com.example.bank.service;
 
+import com.example.bank.entity.Account;
 import com.example.bank.entity.Card;
+import com.example.bank.repository.AccountRepository;
 import com.example.bank.repository.CardRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -12,16 +14,31 @@ import java.util.List;
 public class CardServiceImpl implements CardService {
 
     private final CardRepository cardRepository;
+    private final AccountRepository accountRepository;
 
     @Autowired
-    public CardServiceImpl(CardRepository cardRepository) {
+    public CardServiceImpl(CardRepository cardRepository, AccountRepository accountRepository) {
         this.cardRepository = cardRepository;
+        this.accountRepository = accountRepository;
     }
 
     @Override
     public Card createCard(Card card) {
-        return cardRepository.save(card);
+        Account account = accountRepository.findById(card.getAccount().getAccountId())
+                .orElseThrow(() -> new RuntimeException("Account not found with ID: " + card.getAccount().getAccountId()));
+
+        Card newCard = new Card();
+        newCard.setAccount(account);
+        newCard.setCardNumber(card.getCardNumber());
+        newCard.setCardType(card.getCardType());
+        newCard.setCardStatus(card.getCardStatus());
+        newCard.setPassword(card.getPassword());
+        newCard.setCcv(card.getCcv());
+        newCard.setName(card.getName());
+        newCard.setExpirationDate(card.getExpirationDate());
+        return cardRepository.save(newCard);
     }
+
 
     @Override
     public Card getCardById(Long id) {

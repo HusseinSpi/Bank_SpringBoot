@@ -11,6 +11,14 @@ import java.util.List;
 @Entity
 @Table(name = "customers")
 public class Customer {
+    public Customer(Long customerId, String username, String email, String address, String phone) {
+        this.customerId = customerId;
+        this.username = username;
+        this.email = email;
+        this.address = address;
+        this.phone = phone;
+    }
+
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -40,7 +48,24 @@ public class Customer {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
+    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<CustomerAccount> customerAccounts = new ArrayList<>();
+
+// Getters and Setters
+
+    public List<CustomerAccount> getCustomerAccounts() {
+        return customerAccounts;
+    }
+
+    public void setCustomerAccounts(List<CustomerAccount> customerAccounts) {
+        this.customerAccounts = customerAccounts;
+    }
+
+
     public Customer() {
+    }
+
+    public Customer(Long customerId, String username, String email) {
     }
 
     // -- Getters --

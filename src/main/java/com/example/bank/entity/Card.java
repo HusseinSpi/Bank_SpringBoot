@@ -1,4 +1,7 @@
 package com.example.bank.entity;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 import jakarta.persistence.*;
 import java.time.LocalDate;
@@ -7,6 +10,22 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "cards")
 public class Card {
+    @Override
+    public String toString() {
+        return "Card{" +
+                "cardId=" + cardId +
+                ", account=" + account +
+                ", name='" + name + '\'' +
+                ", password='" + password + '\'' +
+                ", cardNumber='" + cardNumber + '\'' +
+                ", expirationDate=" + expirationDate +
+                ", ccv='" + ccv + '\'' +
+                ", cardStatus=" + cardStatus +
+                ", cardType=" + cardType +
+                ", createdAt=" + createdAt +
+                ", updatedAt=" + updatedAt +
+                '}';
+    }
 
     public enum CardStatus {
         ACTIVE,
@@ -25,15 +44,19 @@ public class Card {
 
     @ManyToOne
     @JoinColumn(name = "account_id", nullable = false)
+    @JsonBackReference
     private Account account;
 
     @Column(length = 100)
     private String name;
+    @Column(length = 5)
+    private String password;
 
-    @Column(name = "card_number", length = 16, nullable = false)
+    @Column(name = "card_number", nullable = true, length = 16, unique = true)
     private String cardNumber;
 
     @Column(name = "expiration_date", nullable = false)
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate expirationDate;
 
     @Column(length = 4, nullable = false)
@@ -52,6 +75,14 @@ public class Card {
 
     @Column(name = "updated_at", columnDefinition = "DATETIME")
     private LocalDateTime updatedAt;
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
 
     public Card() {
     }
