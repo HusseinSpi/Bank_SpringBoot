@@ -41,6 +41,7 @@ public class LoanServiceImpl implements LoanService {
 
         loan.setCreatedAt(LocalDateTime.now());
         loan.setLoanStatus(Loan.LoanStatus.ACTIVE);
+        destinationAccount.deposit(loan.getAmount());
         return loanRepository.save(loan);
     }
 
